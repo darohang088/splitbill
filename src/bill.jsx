@@ -39,11 +39,8 @@ const T = {
   save: "Save",
   scanToPay: "Scan to Pay",
   billReceipt: "Bill Receipt",
-  qrCode: "QR Code",
-  receipt: "Receipt",
   madeWith: "Made with SplitEase · by Hang Daro",
   shareBtn: "📤 Share Summary",
-  capturing: "⏳ Capturing…",
   attachImages: "Attach Images",
   paymentQr: "🔳 Payment QR",
   billScreenshot: "🧾 Bill Screenshot",
@@ -56,9 +53,7 @@ const T = {
   noQr: "No QR uploaded yet.",
   addQrHint: "Go back and add one!",
   close: "Close",
-  you: "you",
-  alertSaved: "✅ Image saved! Share it to Telegram from your Files.",
-  alertError: "Couldn't capture. Try a screenshot instead.",
+  alertError: "Couldn't share. Try a screenshot instead.",
   atLeast2: "Add at least 2 people to split the bill",
 };
 
@@ -124,6 +119,25 @@ function StepBar({ current }) {
   );
 }
 
+async function loadHtml2Canvas() {
+  if (window.html2canvas) return;
+  await new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function nodeToFile(node, filename) {
+  const canvas = await window.html2canvas(node, {
+    scale: 3, useCORS: true, backgroundColor: "#ffffff", logging: false,
+  });
+  return new Promise((res) =>
+    canvas.toBlob(b => res(new File([b], filename, { type: "image/png" })), "image/png")
+  );
+}
+
 export default function BillSplitter() {
   const [step, setStep] = useState(1);
   const [total, setTotal] = useState("");
@@ -143,7 +157,11 @@ export default function BillSplitter() {
   const fileRef = useRef();
   const billRef = useRef();
   const nameRef = useRef();
-  const groupedCardRef = useRef();
+
+  // Separate ref for each panel — each will be captured as its own image file
+  const summaryRef = useRef();
+  const qrRef = useRef();
+  const billPanelRef = useRef();
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -190,39 +208,50 @@ export default function BillSplitter() {
   };
   const fmt = (n) => Number(n).toFixed(2);
 
-  // Determine layout mode
-  const hasBoth = qrImage && billImage;
-  const hasOne = (qrImage && !billImage) || (!qrImage && billImage);
-  const hasNone = !qrImage && !billImage;
   const panelCount = 1 + (qrImage ? 1 : 0) + (billImage ? 1 : 0);
 
+  // ── Share: capture each panel as a separate PNG, share as album ──
   const handleShare = async () => {
     setSharing(true);
     try {
-      if (!window.html2canvas) {
-        await new Promise((res, rej) => {
-          const s = document.createElement("script");
-          s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-          s.onload = res; s.onerror = rej;
-          document.head.appendChild(s);
+      await loadHtml2Canvas();
+
+      const files = [];
+
+      // 1. Summary panel — always included
+      const f1 = await nodeToFile(summaryRef.current, "splitease-summary.png");
+      files.push(f1);
+
+      // 2. QR panel
+      if (qrImage && qrRef.current) {
+        const f2 = await nodeToFile(qrRef.current, "splitease-qr.png");
+        files.push(f2);
+      }
+
+      // 3. Bill panel
+      if (billImage && billPanelRef.current) {
+        const f3 = await nodeToFile(billPanelRef.current, "splitease-bill.png");
+        files.push(f3);
+      }
+
+      // Share all files together as an album (Telegram shows them in its grid)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files })) {
+        await navigator.share({
+          title: "SplitEase",
+          text: desc ? `Bill split: ${desc}` : "Here's our bill split! 🍽",
+          files,
         });
-      }
-      const canvas = await window.html2canvas(groupedCardRef.current, {
-        scale: 3, useCORS: true, backgroundColor: "#F7F5F2", logging: false,
-      });
-      if (navigator.share && navigator.canShare) {
-        const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-        const file = new File([blob], "splitease.png", { type: "image/png" });
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({ title: "SplitEase", text: desc ? `Bill split: ${desc}` : "Here's our bill split! 🍽", files: [file] });
-          setSharing(false); return;
+      } else {
+        // Fallback: trigger download for each file
+        for (const file of files) {
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(file);
+          a.download = file.name;
+          a.click();
+          await new Promise(r => setTimeout(r, 300));
         }
+        alert(`${files.length} image${files.length > 1 ? "s" : ""} saved! Share them to Telegram from your Files.`);
       }
-      const a = document.createElement("a");
-      a.href = canvas.toDataURL("image/png");
-      a.download = "splitease.png";
-      a.click();
-      alert(T.alertSaved);
     } catch (e) {
       if (e?.name !== "AbortError") alert(T.alertError);
     }
@@ -257,90 +286,19 @@ export default function BillSplitter() {
     ...extra,
   });
 
-  // ── Panel renderers ──
-  const renderSummaryPanel = (flex = "1 1 0") => (
-    <div style={{
-      background: "#fff", borderRadius: 20, overflow: "hidden",
-      border: `1px solid ${L.cardBorder}`,
-      flex, minWidth: 0, display: "flex", flexDirection: "column",
-    }}>
-      <div style={{ background: L.text, padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 900, color: "#fff" }}>🍽 SplitEase</div>
-          <div style={{ fontSize: 9, color: "rgba(255,255,255,.45)", fontWeight: 600 }}>by Hang Daro</div>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 9, color: "rgba(255,255,255,.45)", fontWeight: 600 }}>TOTAL</div>
-          <div style={{ fontSize: 18, fontWeight: 900, color: "#fff" }}>{fmt(totalNum)}</div>
-        </div>
-      </div>
-      <div style={{ padding: "14px 16px", flex: 1 }}>
-        {desc && (
-          <div style={{ background: L.accentBg, border: `1px solid ${L.accentBorder}`, borderRadius: 10, padding: "7px 11px", marginBottom: 12 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: L.accentDark }}>📝 {desc}</span>
-          </div>
-        )}
-        {people.map((name, i) => {
-          const isMe = name === OWNER;
-          return (
-            <div key={name}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <Avatar name={isMe ? "Y" : name} color={COLORS[i % COLORS.length]} size={28} />
-                  <span style={{ fontWeight: 800, color: L.text, fontSize: 12 }}>{isMe ? "You" : name}</span>
-                </div>
-                <span style={{ fontWeight: 900, fontSize: 13, color: L.text }}>{fmt(getEff(name))}</span>
-              </div>
-              {i < people.length - 1 && <div style={{ height: 1, background: L.cardBorder }} />}
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ background: L.pill, padding: "8px 16px", textAlign: "center" }}>
-        <span style={{ fontSize: 9, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
-      </div>
-    </div>
-  );
-
-  const renderQrPanel = (flex = "1 1 0") => (
-    <div style={{
-      background: "#fff", borderRadius: 20, overflow: "hidden",
-      border: `1px solid ${L.cardBorder}`,
-      flex, minWidth: 0, display: "flex", flexDirection: "column",
-    }}>
-      <div style={{ background: L.text, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: 12, fontWeight: 900, color: "#fff" }}>🔳 {T.scanToPay}</div>
-        <div style={{ fontSize: 10, color: "rgba(255,255,255,.5)" }}>{fmt(totalNum)}</div>
-      </div>
-      <div style={{ padding: "14px 16px", flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {desc && <p style={{ fontSize: 10, fontWeight: 600, color: L.accentDark, margin: "0 0 10px", textAlign: "center" }}>📝 {desc}</p>}
-        <img src={qrImage} alt="QR" style={{ width: "100%", borderRadius: 10, border: `2px solid ${L.inputBorder}` }} />
-      </div>
-      <div style={{ background: L.pill, padding: "8px 16px", textAlign: "center" }}>
-        <span style={{ fontSize: 9, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
-      </div>
-    </div>
-  );
-
-  const renderBillPanel = (flex = "1 1 0") => (
-    <div style={{
-      background: "#fff", borderRadius: 20, overflow: "hidden",
-      border: `1px solid ${L.cardBorder}`,
-      flex, minWidth: 0, display: "flex", flexDirection: "column",
-    }}>
-      <div style={{ background: L.text, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: 12, fontWeight: 900, color: "#fff" }}>🧾 {T.billReceipt}</div>
-        <div style={{ fontSize: 10, color: "rgba(255,255,255,.5)" }}>{fmt(totalNum)}</div>
-      </div>
-      <div style={{ padding: "14px 16px", flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {desc && <p style={{ fontSize: 10, fontWeight: 600, color: L.accentDark, margin: "0 0 10px", textAlign: "center" }}>📝 {desc}</p>}
-        <img src={billImage} alt="Bill" style={{ width: "100%", borderRadius: 10, border: `2px solid ${L.inputBorder}` }} />
-      </div>
-      <div style={{ background: L.pill, padding: "8px 16px", textAlign: "center" }}>
-        <span style={{ fontSize: 9, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
-      </div>
-    </div>
-  );
+  const panelHeader = (extra = {}) => ({
+    background: L.text, padding: "14px 18px",
+    display: "flex", justifyContent: "space-between", alignItems: "center",
+    ...extra,
+  });
+  const panelFooter = {
+    background: L.pill, padding: "8px 16px", textAlign: "center",
+  };
+  const panelWrap = (extra = {}) => ({
+    background: "#fff", borderRadius: 20, overflow: "hidden",
+    border: `1px solid ${L.cardBorder}`, fontFamily: ff,
+    ...extra,
+  });
 
   return (
     <div style={{ minHeight: "100vh", background: L.bg, fontFamily: ff, display: "flex", flexDirection: "column", alignItems: "center", padding: "0 16px 80px" }}>
@@ -514,46 +472,85 @@ export default function BillSplitter() {
       {step === 4 && (
         <div style={{ width: "100%", maxWidth: 460 }}>
 
-          {/* ── GROUPED CAPTURE ZONE: Telegram-style layout ── */}
-          <div ref={groupedCardRef} style={{
-            marginTop: 24,
-            padding: 12,
-            background: L.bg,
-            borderRadius: 28,
-          }}>
-            {/* CASE 1: Only summary (no images) — single full-width panel */}
-            {hasNone && (
-              <div style={{ display: "flex" }}>
-                {renderSummaryPanel("1 1 100%")}
+          {/* ══════════════════════════════════════════════
+              PANEL 1 — Summary (always shown, always captured)
+              Each panel is its own standalone card with its own ref.
+              html2canvas captures each one independently → 3 separate PNG files
+              → shared as an album, Telegram shows them in its native grid.
+          ══════════════════════════════════════════════ */}
+          <div ref={summaryRef} style={panelWrap({ marginTop: 24 })}>
+            <div style={panelHeader()}>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>🍽 SplitEase</div>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,.45)", fontWeight: 600 }}>by Hang Daro</div>
               </div>
-            )}
-
-            {/* CASE 2: Summary + one image — side by side */}
-            {hasOne && (
-              <div style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "stretch" }}>
-                {renderSummaryPanel("1 1 0")}
-                {qrImage && renderQrPanel("1 1 0")}
-                {billImage && renderBillPanel("1 1 0")}
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 10, color: "rgba(255,255,255,.45)", fontWeight: 600 }}>TOTAL</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "#fff" }}>{fmt(totalNum)}</div>
               </div>
-            )}
-
-            {/* CASE 3: All 3 panels — Telegram-style: big left + stacked right */}
-            {hasBoth && (
-              <div style={{ display: "flex", flexDirection: "row", gap: 10, alignItems: "stretch" }}>
-                {/* Left: Summary — takes full height */}
-                <div style={{ flex: "1 1 0", minWidth: 0, display: "flex" }}>
-                  {renderSummaryPanel("1 1 100%")}
+            </div>
+            <div style={{ padding: "16px 18px" }}>
+              {desc && (
+                <div style={{ background: L.accentBg, border: `1px solid ${L.accentBorder}`, borderRadius: 10, padding: "8px 12px", marginBottom: 14 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: L.accentDark }}>📝 {desc}</span>
                 </div>
-                {/* Right: QR on top, Bill on bottom */}
-                <div style={{ flex: "1 1 0", minWidth: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                  {renderQrPanel("1 1 0")}
-                  {renderBillPanel("1 1 0")}
-                </div>
-              </div>
-            )}
+              )}
+              {people.map((name, i) => {
+                const isMe = name === OWNER;
+                return (
+                  <div key={name}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <Avatar name={isMe ? "Y" : name} color={COLORS[i % COLORS.length]} size={34} />
+                        <span style={{ fontWeight: 800, color: L.text, fontSize: 15 }}>{isMe ? "You" : name}</span>
+                      </div>
+                      <span style={{ fontWeight: 900, fontSize: 16, color: L.text }}>{fmt(getEff(name))}</span>
+                    </div>
+                    {i < people.length - 1 && <div style={{ height: 1, background: L.cardBorder }} />}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={panelFooter}>
+              <span style={{ fontSize: 10, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
+            </div>
           </div>
 
-          {/* Description edit (outside capture) */}
+          {/* PANEL 2 — QR (separate image file when shared) */}
+          {qrImage && (
+            <div ref={qrRef} style={panelWrap({ marginTop: 12 })}>
+              <div style={panelHeader()}>
+                <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>🔳 {T.scanToPay}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)" }}>{fmt(totalNum)}</div>
+              </div>
+              <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                {desc && <p style={{ fontSize: 12, fontWeight: 600, color: L.accentDark, margin: "0 0 12px", textAlign: "center" }}>📝 {desc}</p>}
+                <img src={qrImage} alt="QR" style={{ width: "100%", borderRadius: 12, border: `2px solid ${L.inputBorder}` }} />
+              </div>
+              <div style={panelFooter}>
+                <span style={{ fontSize: 10, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
+              </div>
+            </div>
+          )}
+
+          {/* PANEL 3 — Bill Screenshot (separate image file when shared) */}
+          {billImage && (
+            <div ref={billPanelRef} style={panelWrap({ marginTop: 12 })}>
+              <div style={panelHeader()}>
+                <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>🧾 {T.billReceipt}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)" }}>{fmt(totalNum)}</div>
+              </div>
+              <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                {desc && <p style={{ fontSize: 12, fontWeight: 600, color: L.accentDark, margin: "0 0 12px", textAlign: "center" }}>📝 {desc}</p>}
+                <img src={billImage} alt="Bill" style={{ width: "100%", borderRadius: 12, border: `2px solid ${L.inputBorder}` }} />
+              </div>
+              <div style={panelFooter}>
+                <span style={{ fontSize: 10, color: L.muted, fontWeight: 600 }}>{T.madeWith}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Description edit (outside capture zone) */}
           <div style={{ marginTop: 12 }}>
             {editingDesc ? (
               <div style={{ display: "flex", gap: 8 }}>
@@ -606,9 +603,12 @@ export default function BillSplitter() {
               boxShadow: `0 4px 20px ${L.accent}44`, opacity: sharing ? .7 : 1,
             })}>
               {sharing
-                ? <><span>⏳</span> Capturing…</>
-                : <><span style={{ fontSize: 18 }}>📤</span> {T.shareBtn}
-                    <span style={{ background: "rgba(255,255,255,.25)", borderRadius: 99, padding: "2px 8px", fontSize: 12, fontWeight: 900 }}>{panelCount}</span>
+                ? <><span>⏳</span> Capturing {panelCount} images…</>
+                : <>
+                    <span style={{ fontSize: 18 }}>📤</span> {T.shareBtn}
+                    <span style={{ background: "rgba(255,255,255,.25)", borderRadius: 99, padding: "2px 8px", fontSize: 12, fontWeight: 900 }}>
+                      {panelCount} {panelCount === 1 ? "image" : "images"}
+                    </span>
                   </>
               }
             </button>
