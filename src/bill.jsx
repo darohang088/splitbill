@@ -78,13 +78,18 @@ export default function BillSplitter() {
   const [people, setPeople] = useState([]);
   const [amounts, setAmounts] = useState({});
   const [qrImage, setQrImage] = useState(null);
+  const [billImage, setBillImage] = useState(null);
   const [qrModal, setQrModal] = useState(false);
   const [qrPerson, setQrPerson] = useState(null);
   const [sharing, setSharing] = useState(false);
   const [includedMe, setIncludedMe] = useState(false);
+  const [editingDesc, setEditingDesc] = useState(false);
+  const [descDraft, setDescDraft] = useState("");
   const fileRef = useRef();
+  const billRef = useRef();
   const nameRef = useRef();
   const summaryRef = useRef();
+  const descInputRef = useRef();
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -436,9 +441,53 @@ export default function BillSplitter() {
 
             {/* Body */}
             <div style={{ padding: "20px 24px" }}>
-              {desc && (
-                <div style={{ background: L.accentBg, border: `1px solid ${L.accentBorder}`, borderRadius: 12, padding: "10px 14px", marginBottom: 18 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: L.accentDark }}>📝 {desc}</span>
+              {/* Editable description */}
+              {editingDesc ? (
+                <div style={{ marginBottom: 18 }}>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input
+                      ref={descInputRef}
+                      value={descDraft}
+                      onChange={e => setDescDraft(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") { setDesc(descDraft); setEditingDesc(false); }
+                        if (e.key === "Escape") setEditingDesc(false);
+                      }}
+                      placeholder="e.g. Dinner at Topaz, Birthday party…"
+                      style={{
+                        flex: 1, padding: "10px 13px", borderRadius: 10, fontFamily: ff,
+                        border: `1.5px solid ${L.accent}`, background: L.accentBg,
+                        fontSize: 13, fontWeight: 600, color: L.accentDark, outline: "none",
+                      }}
+                      autoFocus
+                    />
+                    <button onClick={() => { setDesc(descDraft); setEditingDesc(false); }} style={{
+                      padding: "10px 14px", borderRadius: 10, background: L.accent, border: "none",
+                      color: "#fff", fontWeight: 800, fontSize: 13, cursor: "pointer", fontFamily: ff,
+                    }}>Save</button>
+                    <button onClick={() => setEditingDesc(false)} style={{
+                      padding: "10px 12px", borderRadius: 10, background: "transparent",
+                      border: `1.5px solid ${L.inputBorder}`, color: L.muted,
+                      fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: ff,
+                    }}>✕</button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  onClick={() => { setDescDraft(desc); setEditingDesc(true); }}
+                  style={{
+                    background: desc ? L.accentBg : L.pill,
+                    border: `1px dashed ${desc ? L.accentBorder : L.inputBorder}`,
+                    borderRadius: 12, padding: "10px 14px", marginBottom: 18,
+                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between",
+                    transition: "all .2s",
+                  }}
+                  title="Tap to edit receipt note"
+                >
+                  <span style={{ fontSize: 13, fontWeight: 600, color: desc ? L.accentDark : L.muted }}>
+                    {desc ? `📝 ${desc}` : "✏️ Add a receipt note…"}
+                  </span>
+                  <span style={{ fontSize: 11, color: L.muted, fontWeight: 600, marginLeft: 8, flexShrink: 0 }}>edit</span>
                 </div>
               )}
 
@@ -470,13 +519,28 @@ export default function BillSplitter() {
               })}
             </div>
 
-            {/* QR inside capture */}
-            {qrImage && (
-              <div style={{ padding: "0 24px 20px", textAlign: "center" }}>
-                <div style={{ borderTop: `1px solid ${L.cardBorder}`, paddingTop: 16, marginBottom: 12 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: L.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>Scan to Pay</span>
+            {/* QR + Bill Screenshot inside capture — side by side if both present */}
+            {(qrImage || billImage) && (
+              <div style={{ padding: "0 24px 20px" }}>
+                <div style={{ borderTop: `1px solid ${L.cardBorder}`, paddingTop: 16, marginBottom: 12, textAlign: "center" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: L.muted, letterSpacing: 1.5, textTransform: "uppercase" }}>
+                    {qrImage && billImage ? "Scan to Pay · Bill Receipt" : qrImage ? "Scan to Pay" : "Bill Receipt"}
+                  </span>
                 </div>
-                <img src={qrImage} alt="QR" style={{ width: "60%", maxWidth: 200, borderRadius: 16, border: `3px solid ${L.inputBorder}` }} />
+                <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "flex-start" }}>
+                  {qrImage && (
+                    <div style={{ flex: billImage ? 1 : "none", textAlign: "center" }}>
+                      {billImage && <div style={{ fontSize: 10, fontWeight: 700, color: L.muted, letterSpacing: 1, marginBottom: 6, textTransform: "uppercase" }}>QR Code</div>}
+                      <img src={qrImage} alt="QR" style={{ width: billImage ? "100%" : "60%", maxWidth: 200, borderRadius: 12, border: `2px solid ${L.inputBorder}` }} />
+                    </div>
+                  )}
+                  {billImage && (
+                    <div style={{ flex: qrImage ? 1 : "none", textAlign: "center" }}>
+                      {qrImage && <div style={{ fontSize: 10, fontWeight: 700, color: L.muted, letterSpacing: 1, marginBottom: 6, textTransform: "uppercase" }}>Receipt</div>}
+                      <img src={billImage} alt="Bill" style={{ width: qrImage ? "100%" : "60%", maxWidth: 200, borderRadius: 12, border: `2px solid ${L.inputBorder}` }} />
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -496,37 +560,73 @@ export default function BillSplitter() {
               {sharing ? "⏳ Capturing…" : <><span style={{ fontSize: 18 }}>📤</span> Share Summary as Image</>}
             </button>
 
-            {/* QR Upload */}
+            {/* Upload Cards — side by side */}
             <div style={{ ...card, marginTop: 14, padding: "20px 22px" }}>
-              <div style={sLabel}><span>🔳</span> Your Payment QR</div>
-              <p style={{ color: L.muted, fontSize: 12, margin: "0 0 12px", fontWeight: 500 }}>
-                Upload your ABA / Wing / KHQR — it'll appear in the shared image
-              </p>
-              <div onClick={() => fileRef.current.click()} style={{
-                border: `2px dashed ${qrImage ? L.accent : L.inputBorder}`,
-                borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer",
-                background: qrImage ? L.accentBg : L.input, transition: "all .2s",
-              }}>
-                {qrImage ? (
-                  <img src={qrImage} alt="QR" style={{ maxWidth: "100%", maxHeight: 160, borderRadius: 12 }} />
-                ) : (
-                  <>
-                    <div style={{ fontSize: 36 }}>🔳</div>
-                    <p style={{ color: L.muted, margin: "8px 0 0", fontSize: 13, fontWeight: 500 }}>Tap to upload QR code</p>
-                  </>
-                )}
-                <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
-                  const f = e.target.files[0]; if (!f) return;
-                  const r = new FileReader(); r.onload = ev => setQrImage(ev.target.result); r.readAsDataURL(f);
-                }} />
+              <div style={sLabel}><span>🖼</span> Attach Images</div>
+              <div style={{ display: "flex", gap: 10 }}>
+
+                {/* QR Upload */}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: L.sub, marginBottom: 8 }}>🔳 Payment QR</div>
+                  <div onClick={() => fileRef.current.click()} style={{
+                    border: `2px dashed ${qrImage ? L.accent : L.inputBorder}`,
+                    borderRadius: 14, padding: "14px 10px", textAlign: "center", cursor: "pointer",
+                    background: qrImage ? L.accentBg : L.input, transition: "all .2s", minHeight: 110,
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                  }}>
+                    {qrImage ? (
+                      <img src={qrImage} alt="QR" style={{ maxWidth: "100%", maxHeight: 90, borderRadius: 8 }} />
+                    ) : (
+                      <>
+                        <div style={{ fontSize: 28 }}>🔳</div>
+                        <p style={{ color: L.muted, margin: "6px 0 0", fontSize: 11, fontWeight: 500 }}>Tap to upload</p>
+                      </>
+                    )}
+                    <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
+                      const f = e.target.files[0]; if (!f) return;
+                      const r = new FileReader(); r.onload = ev => setQrImage(ev.target.result); r.readAsDataURL(f);
+                    }} />
+                  </div>
+                  {qrImage && (
+                    <button onClick={() => setQrImage(null)} style={{ ...btnGhost({ width: "100%", marginTop: 6, boxSizing: "border-box", fontSize: 12, padding: "7px 10px" }) }}>Remove</button>
+                  )}
+                </div>
+
+                {/* Bill Screenshot Upload */}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: L.sub, marginBottom: 8 }}>🧾 Bill Screenshot</div>
+                  <div onClick={() => billRef.current.click()} style={{
+                    border: `2px dashed ${billImage ? L.accent : L.inputBorder}`,
+                    borderRadius: 14, padding: "14px 10px", textAlign: "center", cursor: "pointer",
+                    background: billImage ? L.accentBg : L.input, transition: "all .2s", minHeight: 110,
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                  }}>
+                    {billImage ? (
+                      <img src={billImage} alt="Bill" style={{ maxWidth: "100%", maxHeight: 90, borderRadius: 8 }} />
+                    ) : (
+                      <>
+                        <div style={{ fontSize: 28 }}>🧾</div>
+                        <p style={{ color: L.muted, margin: "6px 0 0", fontSize: 11, fontWeight: 500 }}>Tap to upload</p>
+                      </>
+                    )}
+                    <input ref={billRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
+                      const f = e.target.files[0]; if (!f) return;
+                      const r = new FileReader(); r.onload = ev => setBillImage(ev.target.result); r.readAsDataURL(f);
+                    }} />
+                  </div>
+                  {billImage && (
+                    <button onClick={() => setBillImage(null)} style={{ ...btnGhost({ width: "100%", marginTop: 6, boxSizing: "border-box", fontSize: 12, padding: "7px 10px" }) }}>Remove</button>
+                  )}
+                </div>
+
               </div>
-              {qrImage && (
-                <button onClick={() => setQrImage(null)} style={{ ...btnGhost({ width: "100%", marginTop: 10, boxSizing: "border-box" }) }}>Remove QR</button>
-              )}
+              <p style={{ color: L.muted, fontSize: 11, margin: "12px 0 0", fontWeight: 500, textAlign: "center" }}>
+                Both images appear in the shared summary 📤
+              </p>
             </div>
 
             <button style={{ ...btnGhost({ width: "100%", marginTop: 10, boxSizing: "border-box" }) }}
-              onClick={() => { setStep(1); setTotal(""); setDesc(""); setPeople([]); setAmounts({}); setQrImage(null); setIncludedMe(false); }}>
+              onClick={() => { setStep(1); setTotal(""); setDesc(""); setPeople([]); setAmounts({}); setQrImage(null); setBillImage(null); setIncludedMe(false); }}>
               🔄 Start Over
             </button>
           </div>
