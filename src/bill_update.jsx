@@ -16,6 +16,7 @@ const COLORS = [
 
 // ── Your friend list ──────────────────────────────────────────────────────────
 const CONTACTS = [
+  { name: "Bong PY", nickname: "Good Husband", emoji: "💑" },
   { name: "Bong Sak", nickname: "Fan ozawa69", emoji: "🐼" },
   { name: "bong hong", nickname: "Tongue Emperor", emoji: "👅" },
   { name: "Daro", nickname: "មហាចោរ​", emoji: "🔥" },
