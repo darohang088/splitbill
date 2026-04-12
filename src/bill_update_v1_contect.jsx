@@ -26,32 +26,30 @@ const FALLBACK_CONTACTS = [
   { name: "Smey", nickname: "kmeng nhean six", emoji: "🍆🍑😩👉👌💦" },
 ];
 
-// ─── CSS ─────────────────────────────────────────────────────────────────────
+// ─── CSS ──────────────────────────────────────────────────────────────────────
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:           #F0F4FF;
-    --card:         rgba(255,255,255,0.85);
-    --card-border:  rgba(255,255,255,0.9);
-    --shadow-sm:    0 2px 12px rgba(99,102,241,0.08);
-    --shadow:       0 8px 40px rgba(99,102,241,0.12), 0 2px 8px rgba(99,102,241,0.06);
-    --shadow-lg:    0 20px 60px rgba(99,102,241,0.18), 0 4px 16px rgba(99,102,241,0.08);
-    --accent:       #6366F1;
-    --accent2:      #8B5CF6;
-    --accent3:      #06B6D4;
-    --green:        #10B981;
-    --green2:       #059669;
-    --red:          #F43F5E;
-    --text:         #0F172A;
-    --sub:          #475569;
-    --muted:        #94A3B8;
-    --border:       rgba(99,102,241,0.15);
-    --inp:          rgba(255,255,255,0.7);
-    --inp-border:   rgba(99,102,241,0.2);
-    --ff:           'Sora', sans-serif;
+    --bg:          #F0F4FF;
+    --card:        rgba(255,255,255,0.85);
+    --card-border: rgba(255,255,255,0.9);
+    --shadow-sm:   0 2px 12px rgba(99,102,241,0.08);
+    --shadow:      0 8px 40px rgba(99,102,241,0.12), 0 2px 8px rgba(99,102,241,0.06);
+    --accent:      #6366F1;
+    --accent2:     #8B5CF6;
+    --green:       #10B981;
+    --green2:      #059669;
+    --red:         #F43F5E;
+    --text:        #0F172A;
+    --sub:         #475569;
+    --muted:       #94A3B8;
+    --border:      rgba(99,102,241,0.15);
+    --inp:         rgba(255,255,255,0.7);
+    --inp-border:  rgba(99,102,241,0.2);
+    --ff:          'Sora', sans-serif;
   }
 
   body {
@@ -64,56 +62,40 @@ const CSS = `
 
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background:
       radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(99,102,241,0.13) 0%, transparent 60%),
       radial-gradient(ellipse 60% 50% at 85% 20%,  rgba(139,92,246,0.10) 0%, transparent 55%),
       radial-gradient(ellipse 70% 60% at 50% 90%,  rgba(6,182,212,0.08)  0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   .app {
-    position: relative;
-    z-index: 1;
-    max-width: 440px;
-    margin: 0 auto;
+    position: relative; z-index: 1;
+    max-width: 440px; margin: 0 auto;
     padding: 0 18px 100px;
   }
 
   .header { text-align: center; padding: 36px 0 0; }
 
   .logo-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--card);
-    backdrop-filter: blur(20px);
-    border: 1.5px solid var(--card-border);
-    border-radius: 24px;
-    padding: 12px 22px;
-    box-shadow: var(--shadow);
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--card); backdrop-filter: blur(20px);
+    border: 1.5px solid var(--card-border); border-radius: 24px;
+    padding: 12px 22px; box-shadow: var(--shadow);
   }
-
   .logo-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
   .logo-sub   { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
   .tagline    { color: var(--sub); font-size: 13px; margin-top: 12px; font-weight: 500; }
 
   .stepbar {
-    display: flex;
-    align-items: center;
-    margin: 20px 0 0;
-    padding: 16px 20px;
-    background: var(--card);
-    backdrop-filter: blur(20px);
-    border: 1.5px solid var(--card-border);
-    border-radius: 20px;
+    display: flex; align-items: center;
+    margin: 20px 0 0; padding: 16px 20px;
+    background: var(--card); backdrop-filter: blur(20px);
+    border: 1.5px solid var(--card-border); border-radius: 20px;
     box-shadow: var(--shadow-sm);
   }
-
   .step-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-
   .step-dot {
     width: 30px; height: 30px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -123,56 +105,39 @@ const CSS = `
   .step-dot.done   { background: linear-gradient(135deg,var(--green),var(--green2)); color:#fff; box-shadow:0 4px 12px rgba(16,185,129,.35); }
   .step-dot.active { background: linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 12px rgba(99,102,241,.4); transform:scale(1.1); }
   .step-dot.idle   { background: rgba(99,102,241,.08); color:var(--muted); }
-
   .step-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
   .step-label.active { color: var(--accent); }
   .step-label.done   { color: var(--green); }
   .step-label.idle   { color: var(--muted); }
-
   .step-line { flex:1; height:2px; margin:0 6px 16px; border-radius:99px; transition:background .3s; }
   .step-line.done { background: linear-gradient(90deg,var(--green),var(--accent)); }
   .step-line.idle { background: rgba(99,102,241,.12); }
 
   .card {
-    background: var(--card);
-    backdrop-filter: blur(20px);
-    border: 1.5px solid var(--card-border);
-    border-radius: 28px;
-    padding: 28px 24px;
-    box-shadow: var(--shadow);
-    margin-top: 20px;
-    animation: slideUp .4s cubic-bezier(.32,1,.6,1);
+    background: var(--card); backdrop-filter: blur(20px);
+    border: 1.5px solid var(--card-border); border-radius: 28px;
+    padding: 28px 24px; box-shadow: var(--shadow);
+    margin-top: 20px; animation: slideUp .4s cubic-bezier(.32,1,.6,1);
   }
-
-  @keyframes slideUp {
-    from { opacity:0; transform:translateY(24px); }
-    to   { opacity:1; transform:translateY(0);    }
-  }
+  @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
   .s-label {
     display: flex; align-items: center; gap: 8px;
-    font-size: 10px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 20px;
+    font-size: 10px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 20px;
   }
-
   .s-label-icon {
     width: 24px; height: 24px;
     background: linear-gradient(135deg,var(--accent),var(--accent2));
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-    box-shadow: 0 2px 8px rgba(99,102,241,.3);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; box-shadow: 0 2px 8px rgba(99,102,241,.3);
   }
 
   .amount-input {
     width: 100%;
     background: linear-gradient(135deg,rgba(99,102,241,.05),rgba(139,92,246,.05));
-    border: 2px solid rgba(99,102,241,.15);
-    border-radius: 20px;
-    padding: 20px;
-    font-family: var(--ff);
-    font-size: 42px; font-weight: 800;
+    border: 2px solid rgba(99,102,241,.15); border-radius: 20px; padding: 20px;
+    font-family: var(--ff); font-size: 42px; font-weight: 800;
     color: var(--text); text-align: center;
     outline: none; letter-spacing: -2px; transition: all .2s;
   }
@@ -184,19 +149,12 @@ const CSS = `
   .amount-input::placeholder { color: rgba(99,102,241,.25); }
 
   .inp {
-    width: 100%;
-    background: var(--inp);
-    border: 1.5px solid var(--inp-border);
-    border-radius: 14px;
-    padding: 13px 16px;
-    font-family: var(--ff); font-size: 14px; color: var(--text);
+    width: 100%; background: var(--inp);
+    border: 1.5px solid var(--inp-border); border-radius: 14px;
+    padding: 13px 16px; font-family: var(--ff); font-size: 14px; color: var(--text);
     outline: none; transition: all .2s;
   }
-  .inp:focus {
-    border-color: var(--accent);
-    background: rgba(255,255,255,.9);
-    box-shadow: 0 0 0 3px rgba(99,102,241,.1);
-  }
+  .inp:focus { border-color: var(--accent); background: rgba(255,255,255,.9); box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
   textarea.inp { resize: none; line-height: 1.5; }
 
   .field-label { font-size:12px; font-weight:700; color:var(--sub); display:block; margin-bottom:8px; }
@@ -209,8 +167,7 @@ const CSS = `
     font-family: var(--ff); border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 6px 20px rgba(99,102,241,.4);
-    transition: all .2s cubic-bezier(.34,1.56,.64,1);
-    margin-top: 20px;
+    transition: all .2s cubic-bezier(.34,1.56,.64,1); margin-top: 20px;
   }
   .btn-primary:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 28px rgba(99,102,241,.5); }
   .btn-primary:active:not(:disabled){ transform:scale(.98); }
@@ -229,16 +186,6 @@ const CSS = `
     border: 1.5px solid var(--border); cursor: pointer; transition: all .2s;
   }
   .btn-ghost:hover { background:rgba(99,102,241,.12); border-color:rgba(99,102,241,.3); }
-
-  .btn-sm {
-    padding: 7px 11px; border-radius: 10px;
-    font-size: 12px; font-weight: 700; font-family: var(--ff);
-    border: 1.5px solid var(--border);
-    background: rgba(99,102,241,.06); color: var(--sub);
-    cursor: pointer; transition: all .2s;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .btn-sm:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
 
   .avatar {
     border-radius: 50%;
@@ -260,10 +207,7 @@ const CSS = `
     display: flex; align-items: center; gap: 12px;
     transition: all .25s cubic-bezier(.34,1.56,.64,1);
   }
-  .me-btn.joined {
-    background: linear-gradient(135deg,rgba(16,185,129,.08),rgba(6,182,212,.06));
-    border: 2px solid rgba(16,185,129,.3);
-  }
+  .me-btn.joined { background: linear-gradient(135deg,rgba(16,185,129,.08),rgba(6,182,212,.06)); border: 2px solid rgba(16,185,129,.3); }
   .me-btn:hover:not(:disabled) { transform:translateY(-1px); }
 
   .contacts-btn {
@@ -288,8 +232,7 @@ const CSS = `
   .divider-text { font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap; }
 
   .progress-wrap {
-    background: rgba(99,102,241,.07);
-    border: 1.5px solid rgba(99,102,241,.12);
+    background: rgba(99,102,241,.07); border: 1.5px solid rgba(99,102,241,.12);
     border-radius: 16px; padding: 14px 16px; margin-bottom: 18px;
   }
   .progress-bg { height:8px; background:rgba(99,102,241,.12); border-radius:99px; overflow:hidden; margin-top:10px; }
@@ -301,8 +244,8 @@ const CSS = `
     padding: 12px 14px; border-radius: 16px;
     margin-bottom: 10px; border: 1.5px solid transparent; transition: all .2s;
   }
-  .split-row.is-me   { background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(6,182,212,.04)); border-color:rgba(16,185,129,.2); }
-  .split-row.is-auto { background:rgba(99,102,241,.04); border-color:rgba(99,102,241,.08); }
+  .split-row.is-me    { background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(6,182,212,.04)); border-color:rgba(16,185,129,.2); }
+  .split-row.is-auto  { background:rgba(99,102,241,.04); border-color:rgba(99,102,241,.08); }
   .split-row.is-custom{ background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(139,92,246,.04)); border-color:rgba(99,102,241,.2); }
 
   .custom-input {
@@ -318,22 +261,27 @@ const CSS = `
   .reset-btn { background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; padding:0 2px; transition:all .2s; }
   .reset-btn:hover { color:var(--red); }
 
-  .panel {
+  /* ── Share panels: ALWAYS hardcoded light colors — never uses CSS vars ──
+     This guarantees html2canvas captures correct colors in both light & dark mode */
+  .share-panel {
     border-radius: 24px; overflow: hidden;
     border: 1.5px solid rgba(99,102,241,.12);
-    box-shadow: var(--shadow); margin-top: 20px;
+    box-shadow: 0 8px 40px rgba(99,102,241,.12);
+    margin-top: 20px;
     animation: slideUp .4s cubic-bezier(.32,1,.6,1);
   }
-  .panel-header {
-    background: linear-gradient(135deg,var(--accent),var(--accent2));
+  .share-panel-header {
+    background: linear-gradient(135deg,#6366F1,#8B5CF6);
     padding: 18px 22px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .panel-body   { background:rgba(255,255,255,.9); backdrop-filter:blur(20px); padding:12px 22px; }
-  .panel-footer { background:rgba(99,102,241,.04); padding:10px 18px; text-align:center; border-top:1px solid rgba(99,102,241,.08); }
-
-  .summary-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; }
-  .summary-row + .summary-row { border-top:1px solid rgba(99,102,241,.07); }
+  .share-panel-body   { background: #ffffff; padding: 12px 22px; }
+  .share-panel-footer { background: rgba(99,102,241,.04); padding: 10px 18px; text-align: center; border-top: 1px solid rgba(99,102,241,.08); }
+  .share-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-top: 1px solid rgba(99,102,241,.07);
+  }
+  .share-row:first-child { border-top: none; }
 
   .note-bar {
     background:var(--card); border:1.5px dashed var(--border);
@@ -344,35 +292,19 @@ const CSS = `
   .note-bar:hover { border-color:var(--accent); background:rgba(99,102,241,.04); }
 
   .upload-zone {
-    border: 2px dashed var(--inp-border);
-    border-radius: 16px; padding: 18px 10px;
-    text-align: center; cursor: pointer;
-    background: var(--inp); min-height: 110px;
+    border: 2px dashed var(--inp-border); border-radius: 16px; padding: 18px 10px;
+    text-align: center; cursor: pointer; background: var(--inp); min-height: 110px;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     transition: all .2s;
   }
   .upload-zone:hover   { border-color:var(--accent); background:rgba(99,102,241,.05); }
   .upload-zone.has-img { border-color:var(--accent); background:rgba(99,102,241,.04); }
 
-  .badge { background:rgba(99,102,241,.1); color:var(--accent); border-radius:99px; padding:3px 12px; font-size:12px; font-weight:800; }
-  .badge-green { background:rgba(16,185,129,.1); color:var(--green2); padding:2px 10px; border-radius:99px; font-size:11px; font-weight:700; }
-  .badge-device { background:rgba(6,182,212,.1); color:#0891b2; padding:2px 8px; border-radius:99px; font-size:10px; font-weight:700; }
+  .badge       { background:rgba(99,102,241,.1); color:#6366F1; border-radius:99px; padding:3px 12px; font-size:12px; font-weight:800; }
+  .badge-green { background:rgba(16,185,129,.1); color:#059669; padding:2px 10px; border-radius:99px; font-size:11px; font-weight:700; }
+  .badge-device{ background:rgba(6,182,212,.1); color:#0891b2; padding:2px 8px; border-radius:99px; font-size:10px; font-weight:700; }
   .tag { display:inline-flex; align-items:center; gap:5px; background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.15); color:var(--accent); border-radius:99px; padding:4px 12px; font-size:11px; font-weight:700; }
   .float-badge { background:rgba(255,255,255,.25); border-radius:99px; padding:3px 12px; font-size:12px; font-weight:800; }
-
-  .modal-backdrop {
-    position:fixed; inset:0; background:rgba(15,23,42,.6);
-    backdrop-filter:blur(12px); z-index:1000;
-    display:flex; align-items:center; justify-content:center;
-    animation:fadeIn .2s;
-  }
-  .modal {
-    background:rgba(255,255,255,.97); border-radius:32px;
-    padding:36px 28px; max-width:340px; width:90%;
-    text-align:center; box-shadow:0 40px 100px rgba(99,102,241,.25);
-    animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
-  }
-  @keyframes popIn { from{opacity:0;transform:scale(.85)} to{opacity:1;transform:scale(1)} }
 
   .sheet-backdrop {
     position:fixed; inset:0; background:rgba(15,23,42,.5);
@@ -380,9 +312,9 @@ const CSS = `
   }
   .sheet {
     position:fixed; bottom:0; left:0; right:0;
-    background:rgba(255,255,255,.97); backdrop-filter:blur(20px);
+    background:#ffffff; backdrop-filter:blur(20px);
     border-radius:32px 32px 0 0; z-index:901;
-    max-height:82vh; display:flex; flex-direction:column;
+    max-height:88vh; display:flex; flex-direction:column;
     box-shadow:0 -12px 60px rgba(99,102,241,.2);
     font-family:var(--ff);
     animation:sheetUp .35s cubic-bezier(.32,1,.6,1);
@@ -395,15 +327,14 @@ const CSS = `
   .contact-row {
     display:flex; align-items:center; gap:12px;
     padding:12px; border-radius:18px; margin-bottom:6px;
-    cursor:pointer; transition:all .15s;
-    border:1.5px solid transparent;
+    cursor:pointer; transition:all .15s; border:1.5px solid transparent;
   }
-  .contact-row:hover   { background:rgba(99,102,241,.05); }
-  .contact-row.selected{ background:rgba(99,102,241,.07); border-color:rgba(99,102,241,.2); }
-  .contact-row.already { opacity:.45; cursor:default; }
+  .contact-row:hover    { background:rgba(99,102,241,.05); }
+  .contact-row.selected { background:rgba(99,102,241,.07); border-color:rgba(99,102,241,.2); }
+  .contact-row.already  { opacity:.45; cursor:default; }
 
-  .chkbox { width:24px; height:24px; border-radius:8px; border:2px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s cubic-bezier(.34,1.56,.64,1); }
-  .chkbox.checked { background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; box-shadow:0 3px 10px rgba(99,102,241,.4); }
+  .chkbox { width:24px; height:24px; border-radius:8px; border:2px solid rgba(99,102,241,.2); background:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s cubic-bezier(.34,1.56,.64,1); }
+  .chkbox.checked { background:linear-gradient(135deg,#6366F1,#8B5CF6); border-color:transparent; box-shadow:0 3px 10px rgba(99,102,241,.4); }
 
   .footer { text-align:center; margin-top:48px; padding-bottom:20px; }
 
@@ -415,43 +346,38 @@ const CSS = `
     box-shadow:0 4px 14px rgba(99,102,241,.4);
     transition:all .2s cubic-bezier(.34,1.56,.64,1);
   }
-  .add-btn:hover { transform:scale(1.08); box-shadow:0 6px 20px rgba(99,102,241,.5); }
-  .add-btn:active{ transform:scale(.94); }
+  .add-btn:hover  { transform:scale(1.08); }
+  .add-btn:active { transform:scale(.94); }
 
-  /* Permission prompt */
-  .perm-box {
-    text-align: center;
-    padding: 40px 20px;
-  }
+  /* Permission prompt inside sheet */
+  .perm-box { text-align:center; padding:32px 20px 16px; }
   .perm-icon {
-    width: 72px; height: 72px; border-radius: 20px; margin: 0 auto 16px;
-    background: linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.08));
-    border: 1.5px solid rgba(99,102,241,.2);
-    display: flex; align-items: center; justify-content: center; font-size: 34px;
+    width:72px; height:72px; border-radius:20px; margin:0 auto 16px;
+    background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.08));
+    border:1.5px solid rgba(99,102,241,.2);
+    display:flex; align-items:center; justify-content:center; font-size:34px;
   }
-  .perm-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-  .perm-sub   { font-size: 13px; color: var(--muted); font-weight: 500; line-height: 1.6; margin-bottom: 20px; }
+  .perm-title { font-size:18px; font-weight:800; color:#0F172A; margin-bottom:8px; }
+  .perm-sub   { font-size:13px; color:#94A3B8; font-weight:500; line-height:1.6; margin-bottom:20px; }
 
   .spinner {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 3px solid rgba(99,102,241,.15);
-    border-top-color: var(--accent);
-    animation: spin .7s linear infinite;
-    margin: 0 auto 14px;
+    width:28px; height:28px; border-radius:50%;
+    border:3px solid rgba(99,102,241,.15); border-top-color:#6366F1;
+    animation:spin .7s linear infinite; margin:0 auto 14px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin { to{transform:rotate(360deg)} }
 
-  /* Dark Mode */
+  /* Dark Mode — sheet stays white, share panels stay white */
   body.dark {
-    --bg:           #0D0F1A;
-    --card:         rgba(22,25,45,0.9);
-    --card-border:  rgba(99,102,241,0.18);
-    --text:         #F1F5F9;
-    --sub:          #94A3B8;
-    --muted:        #64748B;
-    --border:       rgba(99,102,241,0.2);
-    --inp:          rgba(15,18,35,0.8);
-    --inp-border:   rgba(99,102,241,0.25);
+    --bg:          #0D0F1A;
+    --card:        rgba(22,25,45,0.9);
+    --card-border: rgba(99,102,241,0.18);
+    --text:        #F1F5F9;
+    --sub:         #94A3B8;
+    --muted:       #64748B;
+    --border:      rgba(99,102,241,0.2);
+    --inp:         rgba(15,18,35,0.8);
+    --inp-border:  rgba(99,102,241,0.25);
   }
   body.dark::before {
     background:
@@ -461,50 +387,37 @@ const CSS = `
   }
   body.dark .logo-pill,
   body.dark .stepbar,
-  body.dark .card { box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
-  body.dark .panel-body { background: rgba(18,22,42,0.95); }
-  body.dark .panel-footer { background: rgba(99,102,241,0.06); }
-  body.dark .modal { background: rgba(18,22,42,0.98); }
-  body.dark .sheet { background: rgba(14,17,35,0.97); }
-  body.dark .chkbox { background: rgba(15,18,35,0.8); }
-  body.dark .custom-input { background: rgba(15,18,35,0.8); color: var(--text); }
-  body.dark .me-btn { background: rgba(22,25,45,0.7); }
+  body.dark .card  { box-shadow:0 8px 40px rgba(0,0,0,0.4); }
+  body.dark .custom-input { background:rgba(15,18,35,0.8); color:#F1F5F9; }
+  body.dark .me-btn { background:rgba(22,25,45,0.7); }
+  /* sheet and share-panel intentionally stay #ffffff so captured images look correct */
 
   .theme-toggle {
-    display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 12px;
-    background: var(--card); backdrop-filter: blur(16px);
-    border: 1.5px solid var(--card-border); border-radius: 99px;
-    padding: 5px 6px 5px 12px; box-shadow: var(--shadow-sm);
-    cursor: pointer; font-family: var(--ff);
-    font-size: 12px; font-weight: 700; color: var(--sub);
-    transition: all .25s; user-select: none;
+    display:inline-flex; align-items:center; gap:8px; margin-top:12px;
+    background:var(--card); backdrop-filter:blur(16px);
+    border:1.5px solid var(--card-border); border-radius:99px;
+    padding:5px 6px 5px 12px; box-shadow:var(--shadow-sm);
+    cursor:pointer; font-family:var(--ff); font-size:12px; font-weight:700; color:var(--sub);
+    transition:all .25s; user-select:none;
   }
-  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
-
+  .theme-toggle:hover { border-color:var(--accent); color:var(--accent); }
   .toggle-track {
-    width: 36px; height: 20px; border-radius: 99px;
-    background: rgba(99,102,241,0.15);
-    border: 1.5px solid var(--border);
-    position: relative; transition: all .3s; flex-shrink: 0;
+    width:36px; height:20px; border-radius:99px;
+    background:rgba(99,102,241,0.15); border:1.5px solid var(--border);
+    position:relative; transition:all .3s; flex-shrink:0;
   }
-  .toggle-track.on {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-color: transparent; box-shadow: 0 2px 8px rgba(99,102,241,0.4);
-  }
+  .toggle-track.on { background:linear-gradient(135deg,#6366F1,#8B5CF6); border-color:transparent; box-shadow:0 2px 8px rgba(99,102,241,0.4); }
   .toggle-thumb {
-    width: 14px; height: 14px; border-radius: 50%; background: #fff;
-    position: absolute; top: 2px; left: 2px;
-    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    width:14px; height:14px; border-radius:50%; background:#fff;
+    position:absolute; top:2px; left:2px;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 1px 4px rgba(0,0,0,.2);
   }
-  .toggle-thumb.on { transform: translateX(16px); }
+  .toggle-thumb.on { transform:translateX(16px); }
 `;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function getInitial(name) {
-  return name.trim().charAt(0).toUpperCase() || "?";
-}
+// ─── helpers ─────────────────────────────────────────────────────────────────
+const getInitial = (name) => name.trim().charAt(0).toUpperCase() || "?";
 const fmt = (n) => Number(n).toFixed(2);
 
 async function loadHtml2Canvas() {
@@ -520,11 +433,16 @@ async function loadHtml2Canvas() {
 }
 
 async function nodeToFile(node, filename) {
+  // Force white background so dark-mode CSS vars never bleed into the capture
   const canvas = await window.html2canvas(node, {
     scale: 3,
     useCORS: true,
     backgroundColor: "#ffffff",
     logging: false,
+    onclone: (doc) => {
+      // Remove dark class from cloned document so CSS vars resolve to light values
+      doc.body.classList.remove("dark");
+    },
   });
   return new Promise((res) =>
     canvas.toBlob(
@@ -532,58 +450,6 @@ async function nodeToFile(node, filename) {
       "image/png"
     )
   );
-}
-
-// ─── useContacts hook ─────────────────────────────────────────────────────────
-function useContacts() {
-  const [contacts, setContacts] = useState(null);
-  // status: idle | requesting | granted | denied | unsupported
-  const [status, setStatus] = useState("idle");
-
-  const isSupported =
-    typeof navigator !== "undefined" &&
-    "contacts" in navigator &&
-    "ContactsManager" in window;
-
-  const requestContacts = async () => {
-    if (!isSupported) {
-      setStatus("unsupported");
-      setContacts(FALLBACK_CONTACTS);
-      return;
-    }
-
-    setStatus("requesting");
-    try {
-      const results = await navigator.contacts.select(["name", "tel"], {
-        multiple: true,
-      });
-
-      if (!results || results.length === 0) {
-        // User cancelled the picker — fall back
-        setStatus("denied");
-        setContacts(FALLBACK_CONTACTS);
-        return;
-      }
-
-      const mapped = results
-        .filter((c) => c.name && c.name[0])
-        .map((c) => ({
-          name: c.name[0],
-          nickname: c.tel && c.tel[0] ? c.tel[0] : "",
-          emoji: "",
-          isDevice: true,
-        }));
-
-      setStatus("granted");
-      setContacts(mapped.length > 0 ? mapped : FALLBACK_CONTACTS);
-    } catch (err) {
-      console.warn("Contacts picker:", err);
-      setStatus("denied");
-      setContacts(FALLBACK_CONTACTS);
-    }
-  };
-
-  return { contacts, status, isSupported, requestContacts };
 }
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
@@ -650,28 +516,59 @@ function StepBar({ current }) {
 function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
   const [selected, setSelected] = useState([]);
   const [search, setSearch] = useState("");
-  const { contacts, status, isSupported, requestContacts } = useContacts();
+  const [contacts, setContacts] = useState(null);
+  // status: idle | requesting | granted | denied | unsupported
+  const [status, setStatus] = useState("idle");
+
+  const isSupported =
+    typeof navigator !== "undefined" &&
+    "contacts" in navigator &&
+    "ContactsManager" in window;
 
   useEffect(() => {
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelected([]);
       setSearch("");
-      // Auto-trigger picker when sheet opens
-      if (contacts === null) {
-        requestContacts();
-      }
+      if (contacts === null) setStatus("idle");
     }
   }, [open]);
 
   if (!open) return null;
 
-  const list = contacts || [];
-  const filtered = list.filter(
-    (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      (c.nickname || "").toLowerCase().includes(search.toLowerCase())
-  );
+  // MUST be called from a direct button click — browser blocks auto calls
+  const handleRequestContacts = async () => {
+    if (!isSupported) {
+      setStatus("unsupported");
+      setContacts(FALLBACK_CONTACTS);
+      return;
+    }
+    setStatus("requesting");
+    try {
+      const results = await navigator.contacts.select(["name", "tel"], {
+        multiple: true,
+      });
+      if (!results || results.length === 0) {
+        setStatus("denied");
+        setContacts(FALLBACK_CONTACTS);
+        return;
+      }
+      const mapped = results
+        .filter((c) => c.name?.[0])
+        .map((c) => ({
+          name: c.name[0],
+          nickname: c.tel?.[0] ?? "",
+          emoji: "",
+          isDevice: true,
+        }));
+      setStatus("granted");
+      setContacts(mapped.length > 0 ? mapped : FALLBACK_CONTACTS);
+    } catch (err) {
+      console.warn("Contacts picker:", err);
+      setStatus("denied");
+      setContacts(FALLBACK_CONTACTS);
+    }
+  };
 
   const toggle = (name) =>
     setSelected((p) =>
@@ -683,83 +580,81 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
     onClose();
   };
 
-  // ── Body states ──
+  const list = contacts || [];
+  const filtered = list.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      (c.nickname || "").toLowerCase().includes(search.toLowerCase())
+  );
+
   const renderBody = () => {
-    if (status === "requesting") {
+    // ── Step 1: Ask permission with a real button tap ──
+    if (status === "idle") {
       return (
         <div className="perm-box">
           <div className="perm-icon">📱</div>
-          <div className="perm-title">Accessing Contacts…</div>
+          <div className="perm-title">Load Your Contacts</div>
           <div className="perm-sub">
-            Your device will ask permission to read your contacts. Please allow
-            access when prompted.
+            Tap the button below. Your phone will ask you to allow contact
+            access — select the contacts you want to add.
           </div>
-          <div className="spinner" />
-          <div style={{ fontSize: 12, color: "var(--muted)", fontWeight: 500 }}>
-            Waiting for your response…
+          <button
+            className="btn-primary"
+            style={{ marginTop: 0, fontSize: 15 }}
+            onClick={handleRequestContacts}
+          >
+            📋 Allow Contact Access
+          </button>
+          <div
+            style={{
+              marginTop: 18,
+              fontSize: 12,
+              color: "#94A3B8",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+            onClick={() => {
+              setStatus("unsupported");
+              setContacts(FALLBACK_CONTACTS);
+            }}
+          >
+            Use saved contacts instead →
           </div>
         </div>
       );
     }
 
+    // ── Waiting for picker ──
+    if (status === "requesting") {
+      return (
+        <div className="perm-box">
+          <div className="perm-icon">📱</div>
+          <div className="perm-title">Select Contacts…</div>
+          <div className="perm-sub">
+            Pick the people you want to add from your phone's contacts list.
+          </div>
+          <div className="spinner" />
+          <div style={{ fontSize: 12, color: "#94A3B8", fontWeight: 500 }}>
+            Waiting for your selection…
+          </div>
+        </div>
+      );
+    }
+
+    // ── List view ──
     return (
       <>
-        {/* Warning banner for unsupported / denied */}
-        {(status === "denied" || status === "unsupported") && (
-          <div
-            style={{
-              background:
-                "linear-gradient(135deg,rgba(244,63,94,.07),rgba(251,146,60,.05))",
-              border: "1.5px solid rgba(244,63,94,.2)",
-              borderRadius: 14,
-              padding: "10px 14px",
-              marginBottom: 12,
-              fontSize: 12,
-              fontWeight: 600,
-              color: "var(--red)",
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 8,
-            }}
-          >
-            <span style={{ fontSize: 14 }}>⚠️</span>
-            <span>
-              {status === "unsupported"
-                ? "Contact Picker not supported on this browser. Showing saved contacts."
-                : "Contact access was denied or cancelled. Showing saved contacts."}
-            </span>
-          </div>
-        )}
-
-        {/* Retry button */}
-        {status === "denied" && isSupported && (
-          <button
-            className="btn-primary"
-            style={{
-              marginTop: 0,
-              marginBottom: 12,
-              padding: "10px 16px",
-              fontSize: 13,
-            }}
-            onClick={requestContacts}
-          >
-            📱 Try Device Contacts Again
-          </button>
-        )}
-
-        {/* Granted banner */}
         {status === "granted" && (
           <div
             style={{
-              background:
-                "linear-gradient(135deg,rgba(16,185,129,.08),rgba(6,182,212,.06))",
+              background: "rgba(16,185,129,.08)",
               border: "1.5px solid rgba(16,185,129,.2)",
               borderRadius: 14,
               padding: "10px 14px",
               marginBottom: 12,
               fontSize: 12,
               fontWeight: 600,
-              color: "var(--green2)",
+              color: "#059669",
               display: "flex",
               alignItems: "center",
               gap: 8,
@@ -767,16 +662,58 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
           >
             <span>✅</span>
             <span>Loaded {list.length} contacts from your device</span>
+            <span
+              style={{
+                marginLeft: "auto",
+                fontSize: 11,
+                cursor: "pointer",
+                color: "#6366F1",
+              }}
+              onClick={handleRequestContacts}
+            >
+              Refresh
+            </span>
+          </div>
+        )}
+        {(status === "denied" || status === "unsupported") && (
+          <div
+            style={{
+              background: "rgba(244,63,94,.07)",
+              border: "1.5px solid rgba(244,63,94,.2)",
+              borderRadius: 14,
+              padding: "10px 14px",
+              marginBottom: 12,
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#F43F5E",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 8,
+            }}
+          >
+            <span style={{ flexShrink: 0 }}>⚠️</span>
+            <span style={{ flex: 1 }}>
+              {status === "unsupported"
+                ? "Contact Picker not supported on this browser. Showing saved contacts."
+                : "Access denied or cancelled. Showing saved contacts."}
+            </span>
+            {status === "denied" && isSupported && (
+              <span
+                style={{ flexShrink: 0, cursor: "pointer", color: "#6366F1" }}
+                onClick={handleRequestContacts}
+              >
+                Try again
+              </span>
+            )}
           </div>
         )}
 
-        {/* List */}
         {filtered.length === 0 && (
           <div
             style={{
               textAlign: "center",
               padding: "32px 0",
-              color: "var(--muted)",
+              color: "#94A3B8",
               fontSize: 14,
             }}
           >
@@ -812,7 +749,7 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
                     style={{
                       fontWeight: 800,
                       fontSize: 15,
-                      color: isSel ? "var(--accent)" : "var(--text)",
+                      color: isSel ? "#6366F1" : "#0F172A",
                     }}
                   >
                     {contact.name}
@@ -829,7 +766,7 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
                   <div
                     style={{
                       fontSize: 12,
-                      color: isSel ? "var(--accent)" : "var(--muted)",
+                      color: isSel ? "#6366F1" : "#94A3B8",
                       fontWeight: 500,
                       marginTop: 1,
                     }}
@@ -871,21 +808,21 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
             }}
           >
             <div>
-              <div
-                style={{ fontSize: 18, fontWeight: 800, color: "var(--text)" }}
-              >
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>
                 {status === "granted" ? "📱 Device Contacts" : "Select Friends"}
               </div>
               <div
                 style={{
                   fontSize: 12,
-                  color: "var(--muted)",
+                  color: "#94A3B8",
                   fontWeight: 500,
                   marginTop: 2,
                 }}
               >
-                {status === "requesting"
-                  ? "Waiting for permission…"
+                {status === "idle"
+                  ? "Tap Allow to load your contacts"
+                  : status === "requesting"
+                  ? "Waiting for selection…"
                   : selected.length === 0
                   ? "Tap to select"
                   : `${selected.length} selected`}
@@ -904,15 +841,16 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "var(--sub)",
+                color: "#475569",
               }}
             >
               ×
             </button>
           </div>
 
-          {/* Search — hide while requesting */}
-          {status !== "requesting" && (
+          {(status === "granted" ||
+            status === "denied" ||
+            status === "unsupported") && (
             <div style={{ position: "relative", marginBottom: 14 }}>
               <span
                 style={{
@@ -964,14 +902,14 @@ function ContactsSheet({ open, onClose, onAdd, alreadyAdded }) {
             <div
               style={{
                 textAlign: "center",
-                color: "var(--muted)",
+                color: "#94A3B8",
                 fontSize: 13,
                 fontWeight: 500,
                 padding: "6px 0",
               }}
             >
-              {status === "requesting"
-                ? "Waiting for contacts…"
+              {status === "idle" || status === "requesting"
+                ? "Contacts not loaded yet"
                 : "Select at least one friend"}
             </div>
           )}
@@ -1018,7 +956,6 @@ export default function SplitEase() {
 
   const totalNum = parseFloat(total) || 0;
 
-  // ── People helpers ────────────────────────────────────────────────────────
   const addPerson = (name) => {
     const n = (name || nameInput).trim();
     if (!n || people.includes(n)) return;
@@ -1028,10 +965,7 @@ export default function SplitEase() {
   };
 
   const addFromContacts = (names) => {
-    setPeople((prev) => {
-      const toAdd = names.filter((n) => !prev.includes(n));
-      return [...prev, ...toAdd];
-    });
+    setPeople((prev) => [...prev, ...names.filter((n) => !prev.includes(n))]);
   };
 
   const includeMe = () => {
@@ -1052,7 +986,6 @@ export default function SplitEase() {
 
   const setAmount = (name, val) => setAmounts((a) => ({ ...a, [name]: val }));
 
-  // ── Split math ────────────────────────────────────────────────────────────
   const lockedTotal = people.reduce((s, p) => {
     const v = parseFloat(amounts[p]);
     return s + (isNaN(v) ? 0 : v);
@@ -1068,7 +1001,6 @@ export default function SplitEase() {
     return isNaN(v) || amounts[name] === "" ? splitShare : v;
   };
 
-  // ── Share ─────────────────────────────────────────────────────────────────
   const panelCount = 1 + (qrImage ? 1 : 0) + (billImage ? 1 : 0);
 
   const handleShare = async () => {
@@ -1111,7 +1043,6 @@ export default function SplitEase() {
     setSharing(false);
   };
 
-  // ── Reset ─────────────────────────────────────────────────────────────────
   const goReset = () => {
     setStep(1);
     setTotal("");
@@ -1123,7 +1054,6 @@ export default function SplitEase() {
     setIncludedMe(false);
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="app">
       {/* HEADER */}
@@ -1200,7 +1130,6 @@ export default function SplitEase() {
             )}
           </div>
 
-          {/* Count Me In */}
           <button
             className={`me-btn ${includedMe ? "joined" : ""}`}
             disabled={includedMe}
@@ -1226,7 +1155,6 @@ export default function SplitEase() {
             <span style={{ fontSize: 18 }}>{includedMe ? "✅" : "👋"}</span>
           </button>
 
-          {/* Select from contacts */}
           <button
             className="contacts-btn"
             onClick={() => setShowContacts(true)}
@@ -1254,7 +1182,7 @@ export default function SplitEase() {
               <div
                 style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500 }}
               >
-                Tap to open your contacts
+                Tap to load your phone contacts
               </div>
             </div>
             <div className="badge">→</div>
@@ -1266,7 +1194,6 @@ export default function SplitEase() {
             <div className="divider-line" />
           </div>
 
-          {/* Manual input */}
           <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
             <input
               ref={nameRef}
@@ -1282,7 +1209,6 @@ export default function SplitEase() {
             </button>
           </div>
 
-          {/* People list */}
           {people.map((name, i) => {
             const isMe = name === OWNER;
             const contact = FALLBACK_CONTACTS.find((c) => c.name === name);
@@ -1557,17 +1483,19 @@ export default function SplitEase() {
       {/* STEP 4 */}
       {step === 4 && (
         <div style={{ width: "100%" }}>
-          {/* Summary Panel */}
-          <div ref={summaryRef} className="panel">
-            <div className="panel-header">
+          {/* Summary — hardcoded light colors, correct in both modes */}
+          <div ref={summaryRef} className="share-panel">
+            <div className="share-panel-header">
               <div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>
+                <div
+                  style={{ fontSize: 16, fontWeight: 900, color: "#ffffff" }}
+                >
                   🍽 SplitEase
                 </div>
                 <div
                   style={{
                     fontSize: 10,
-                    color: "rgba(255,255,255,0.5)",
+                    color: "rgba(255,255,255,0.55)",
                     fontWeight: 600,
                   }}
                 >
@@ -1578,7 +1506,7 @@ export default function SplitEase() {
                 <div
                   style={{
                     fontSize: 10,
-                    color: "rgba(255,255,255,0.5)",
+                    color: "rgba(255,255,255,0.55)",
                     fontWeight: 700,
                     letterSpacing: 1,
                   }}
@@ -1589,7 +1517,7 @@ export default function SplitEase() {
                   style={{
                     fontSize: 24,
                     fontWeight: 900,
-                    color: "#fff",
+                    color: "#ffffff",
                     letterSpacing: "-1px",
                   }}
                 >
@@ -1597,87 +1525,79 @@ export default function SplitEase() {
                 </div>
               </div>
             </div>
-            <div className="panel-body">
+            <div className="share-panel-body">
               {desc && (
                 <div
                   style={{
-                    background:
-                      "linear-gradient(135deg,rgba(16,185,129,.07),rgba(6,182,212,.05))",
-                    border: "1.5px solid rgba(16,185,129,.18)",
+                    background: "rgba(16,185,129,0.07)",
+                    border: "1.5px solid rgba(16,185,129,0.18)",
                     borderRadius: 12,
                     padding: "9px 14px",
                     marginBottom: 14,
                   }}
                 >
                   <span
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "var(--green2)",
-                    }}
+                    style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}
                   >
                     📝 {desc}
                   </span>
                 </div>
               )}
-              {people.map((name, i) => {
-                const isMe = name === OWNER;
-                return (
-                  <div key={name} className="summary-row">
-                    <div
-                      style={{ display: "flex", alignItems: "center", gap: 10 }}
-                    >
-                      <Avatar
-                        name={isMe ? "Y" : name}
-                        color={COLORS[i % COLORS.length]}
-                        size={32}
-                      />
-                      <div
-                        style={{
-                          fontWeight: 800,
-                          color: "var(--text)",
-                          fontSize: 15,
-                        }}
-                      >
-                        {isMe ? "You" : name}
-                      </div>
-                    </div>
+              {people.map((name, i) => (
+                <div key={name} className="share-row">
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 10 }}
+                  >
+                    <Avatar
+                      name={name === OWNER ? "Y" : name}
+                      color={COLORS[i % COLORS.length]}
+                      size={32}
+                    />
                     <div
                       style={{
-                        fontWeight: 900,
-                        fontSize: 18,
-                        color: "var(--text)",
-                        letterSpacing: "-0.5px",
+                        fontWeight: 800,
+                        color: "#0F172A",
+                        fontSize: 15,
                       }}
                     >
-                      {fmt(getEff(name))}
+                      {name === OWNER ? "You" : name}
                     </div>
                   </div>
-                );
-              })}
+                  <div
+                    style={{
+                      fontWeight: 900,
+                      fontSize: 18,
+                      color: "#0F172A",
+                      letterSpacing: "-0.5px",
+                    }}
+                  >
+                    {fmt(getEff(name))}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="panel-footer">
-              <span
-                style={{ fontSize: 10, color: "var(--muted)", fontWeight: 600 }}
-              >
+            <div className="share-panel-footer">
+              <span style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600 }}>
                 Made with SplitEase · by Hang Daro
               </span>
             </div>
           </div>
 
-          {/* QR Panel */}
+          {/* QR */}
           {qrImage && (
-            <div ref={qrRef} className="panel" style={{ marginTop: 12 }}>
-              <div className="panel-header">
-                <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>
+            <div ref={qrRef} className="share-panel" style={{ marginTop: 12 }}>
+              <div className="share-panel-header">
+                <div
+                  style={{ fontSize: 15, fontWeight: 900, color: "#ffffff" }}
+                >
                   🔳 Scan to Pay
                 </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>
                   {fmt(totalNum)}
                 </div>
               </div>
               <div
-                className="panel-body"
+                className="share-panel-body"
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -1689,7 +1609,7 @@ export default function SplitEase() {
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
-                      color: "var(--green2)",
+                      color: "#059669",
                       margin: "0 0 12px",
                       textAlign: "center",
                     }}
@@ -1707,13 +1627,9 @@ export default function SplitEase() {
                   }}
                 />
               </div>
-              <div className="panel-footer">
+              <div className="share-panel-footer">
                 <span
-                  style={{
-                    fontSize: 10,
-                    color: "var(--muted)",
-                    fontWeight: 600,
-                  }}
+                  style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600 }}
                 >
                   Made with SplitEase · by Hang Daro
                 </span>
@@ -1721,19 +1637,25 @@ export default function SplitEase() {
             </div>
           )}
 
-          {/* Bill Panel */}
+          {/* Bill */}
           {billImage && (
-            <div ref={billPanelRef} className="panel" style={{ marginTop: 12 }}>
-              <div className="panel-header">
-                <div style={{ fontSize: 15, fontWeight: 900, color: "#fff" }}>
+            <div
+              ref={billPanelRef}
+              className="share-panel"
+              style={{ marginTop: 12 }}
+            >
+              <div className="share-panel-header">
+                <div
+                  style={{ fontSize: 15, fontWeight: 900, color: "#ffffff" }}
+                >
                   🧾 Bill Receipt
                 </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>
                   {fmt(totalNum)}
                 </div>
               </div>
               <div
-                className="panel-body"
+                className="share-panel-body"
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -1745,7 +1667,7 @@ export default function SplitEase() {
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
-                      color: "var(--green2)",
+                      color: "#059669",
                       margin: "0 0 12px",
                       textAlign: "center",
                     }}
@@ -1763,13 +1685,9 @@ export default function SplitEase() {
                   }}
                 />
               </div>
-              <div className="panel-footer">
+              <div className="share-panel-footer">
                 <span
-                  style={{
-                    fontSize: 10,
-                    color: "var(--muted)",
-                    fontWeight: 600,
-                  }}
+                  style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600 }}
                 >
                   Made with SplitEase · by Hang Daro
                 </span>
@@ -1777,7 +1695,7 @@ export default function SplitEase() {
             </div>
           )}
 
-          {/* Note edit */}
+          {/* Note */}
           {!editingDesc ? (
             <div
               className="note-bar"
@@ -1847,7 +1765,6 @@ export default function SplitEase() {
           <div className="card" style={{ padding: "20px 22px" }}>
             <div className="s-label">Attach Images</div>
             <div style={{ display: "flex", gap: 10 }}>
-              {/* QR Upload */}
               <div style={{ flex: 1 }}>
                 <div
                   style={{
@@ -1916,8 +1833,6 @@ export default function SplitEase() {
                   </button>
                 )}
               </div>
-
-              {/* Bill Upload */}
               <div style={{ flex: 1 }}>
                 <div
                   style={{
@@ -2000,7 +1915,6 @@ export default function SplitEase() {
             </p>
           </div>
 
-          {/* Share */}
           <button
             className="btn-primary btn-green"
             style={{ marginTop: 14, opacity: sharing ? 0.7 : 1 }}
@@ -2031,7 +1945,6 @@ export default function SplitEase() {
         </div>
       )}
 
-      {/* FOOTER */}
       <div className="footer">
         <p style={{ color: "var(--muted)", fontSize: 12, fontWeight: 500 }}>
           Built with ❤️ by{" "}
@@ -2039,7 +1952,6 @@ export default function SplitEase() {
         </p>
       </div>
 
-      {/* CONTACTS SHEET */}
       <ContactsSheet
         open={showContacts}
         onClose={() => setShowContacts(false)}
