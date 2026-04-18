@@ -1061,7 +1061,7 @@ export default function SplitEase() {
         <div className="logo-pill">
           <div>
             <div className="logo-title">SplitEase</div>
-            <div className="logo-sub">by Hang Daro</div>
+            {/* <div className="logo-sub">by Hang Daro</div> */}
           </div>
         </div>
         <p className="tagline">Split bills without the drama ✨</p>
@@ -1492,7 +1492,7 @@ export default function SplitEase() {
                 >
                   🍽 SplitEase
                 </div>
-                <div
+                {/* <div
                   style={{
                     fontSize: 10,
                     color: "rgba(255,255,255,0.55)",
@@ -1500,7 +1500,7 @@ export default function SplitEase() {
                   }}
                 >
                   by Hang Daro
-                </div>
+                </div> */}
               </div>
               <div style={{ textAlign: "right" }}>
                 <div

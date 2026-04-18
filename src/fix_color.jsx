@@ -1466,8 +1466,8 @@ export default function SplitEase() {
             }}
           >
             <div className="panel-header">
-              <div>
-                {/* <div
+              {/* <div> */}
+              {/* <div
                   style={{
                     fontSize: 17,
                     fontWeight: 900,
@@ -1477,7 +1477,7 @@ export default function SplitEase() {
                 >
                    SplitEase
                 </div> */}
-                <div
+              {/* <div
                   style={{
                     fontSize: 11,
                     color: "#C4B5FD",
@@ -1486,9 +1486,9 @@ export default function SplitEase() {
                   }}
                 >
                   by Hang Daro
-                </div>
-              </div>
-              <div style={{ textAlign: "right" }}>
+                </div> */}
+              {/* </div> */}
+              <div style={{ textAlign: "left" }}>
                 <div
                   style={{
                     fontSize: 10,
